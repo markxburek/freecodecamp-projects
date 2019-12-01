@@ -8,27 +8,23 @@ Write a function which takes a ROT13 encoded string as input and returns a decod
 All letters will be uppercase. Do not transform any non-alphabetic character (i.e. spaces, punctuation), but do pass them on.
 
 */
-function rot13(str) { // LBH QVQ VG!
-    //65=A 90=Z
-
+function caesarCipher(str) {  
+    
     let stringLength = str.length;
     let decodedString = "";
     let cyperShift = 13;
     let numberOfLettersInTheAlphabet = 26;
     let asciiCodeOfTheLetterZ = 90;
-    let asciiCodeOfWhiteSpace = 32;
+
+    let alphaNumericCharacters = /[A-Za-z0-9]/;
 
     for (let i = 0; i < stringLength; i++) {
 
         let currentCharacter = str.charAt(i);
-
         let currentCharacterCode = currentCharacter.charCodeAt(0);
-        console.log(currentCharacterCode);
 
-        if (currentCharacterCode !== asciiCodeOfWhiteSpace) {
 
-        // if (currentCharacterCode !== asciiCodeOfWhiteSpace) {
-
+        if (alphaNumericCharacters.test(currentCharacter)) {
             currentCharacterCode = currentCharacter.charCodeAt(0) + cyperShift;
 
 
@@ -38,30 +34,9 @@ function rot13(str) { // LBH QVQ VG!
             } else {
                 decodedString += String.fromCharCode(currentCharacterCode);
             }
-
         } else {
-            decodedString += " ";
+            decodedString += currentCharacter;
         }
-
-
-
-        let decodedCharacter = String.fromCharCode(currentCharacterCode);
-        console.log("decoded character is " + decodedCharacter);
-
-        console.log(decodedString)
     }
-
-    //let stringArray = str.split('');
-    //
-    // stringArray.forEach(element => {
-    //   let characterCode = element.charCodeAt(0);
-    //   element = String.fromCharCode(characterCode + 13);
-    //   console.log(element);
-
-    // });
-
-
-
-    //console.log(stringArray);
     return decodedString;
 }
