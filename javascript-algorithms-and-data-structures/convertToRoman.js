@@ -2,11 +2,14 @@
 Convert the given number into a roman numeral.
 
 All roman numerals answers should be provided in upper-case.
+
+This will work any positive integer up to and including 10000. 
 */
 
 function convertToRoman(num) {
 
     let romanConversionTable = {
+        0: "",
         1: "I",
         2: "II",
         3: "III",
@@ -34,11 +37,35 @@ function convertToRoman(num) {
         700: "DCC",
         800: "DCCC",
         900: "CM",
-        1000: "M"
-    };
-    
-        
-     return num;
+        1000: "M",
+        2000: "MM",
+        3000: "MMM",
+        4000: "(IV_)",
+        5000: "(V_)",
+        6000: "(VI_)",
+        7000: "(VII)",
+        8000: "(VIII_)",
+        9000: "(IX)",
+        10000:"(X_)"
+    }; 
+
+    if( (num > 10000) | (num < 0) ) return undefined;
+
+    let arrayRepresentationOfNumber = num.toString().split('');  
+
+    let arrayLength = arrayRepresentationOfNumber.length;
+    let romanNumber = "";
+
+    for (let i = 0; i < arrayLength; i++) {
+
+        let decimalDeconstructionOfNumber = parseInt(arrayRepresentationOfNumber[i], 10) * Math.pow(10, arrayLength - i - 1);
+
+        let romanNumeral = romanConversionTable[decimalDeconstructionOfNumber]
+      
+        romanNumber += romanNumeral.toString();
     }
- 
-    
+
+    return romanNumber;
+}
+
+convertToRoman(2);
