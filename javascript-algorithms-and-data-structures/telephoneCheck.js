@@ -25,96 +25,46 @@ otherwise return false.
 
 */
 
-function telephoneCheck(str) {
-  // Good luck!
-  let nonPhoneNumberSymbolsRegex = /[^0-9\(\)\-\s]/g;
+
+const eliminateWhiteSpace = phoneNumber => {
+
   let eliminateWhiteSpace = /[^\s]/g;
 
+  return phoneNumber.match(eliminateWhiteSpace);
 
-  let phoneRegex1 = /^\d\d\d-\d\d\d-\d\d\d\d$/;
-  let phoneRegex2 = /^\(\d\d\d\)\d\d\d-\d\d\d\d$/;
-  let phoneRegex3 = /^\1\(\d\d\d\)\d\d\d-\d\d\d\d$/;
-  let phoneRegex4 = /^\d\d\d\d\d\d\d\d\d\d$/;
+}
 
-  let digits = /[0-9]/g;
-  //  let filteredString = str.match(phoneNumberSymbolsRegex).join('') ;
-  //   console.log(filteredString);
+function telephoneCheck(phoneNumber) {
 
-  if (nonPhoneNumberSymbolsRegex.test(str)) return false;
 
-  let noWhiteSpaceString = str.match(eliminateWhiteSpace);
-  // console.log(noWhiteSpaceString);
+  let phoneRegex = [
+    /^(1)\d\d\d-\d\d\d-\d\d\d\d$/,
+    /^\d\d\d-\d\d\d-\d\d\d\d$/,
+    /^\(\d\d\d\)\d\d\d-\d\d\d\d$/,
+    /^(1)\(\d\d\d\)\d\d\d-\d\d\d\d$/,
+    /^\d\d\d\d\d\d\d\d\d\d$/,
+    /^1\d\d\d\d\d\d\d\d\d\d$/
 
-  // console.log("before: " +noWhiteSpaceString);
-  if (noWhiteSpaceString[0] === "1") {
-    noWhiteSpaceString.shift();
-    //noWhiteSpaceString = noWhiteSpaceString.join('');
+  ];
 
-  } else {
-    //noWhiteSpaceString =noWhiteSpaceString.join('');
-  }
+  phoneNumber = eliminateWhiteSpace(phoneNumber);
 
-  if (noWhiteSpaceString[0] === "(") {
+  phoneNumber = phoneNumber.join('');
 
-    
-    if (noWhiteSpaceString[4] !== ")") {
-      return false;
+  for (let regex of phoneRegex) {
+
+    if (regex.test(phoneNumber)) {
+
+      return true;
+
     }
-  }
-
-
-
-
-  noWhiteSpaceString = noWhiteSpaceString.join('');
-
-  console.log("after: " + noWhiteSpaceString);
-
-
-
-
-
-
-
-  if (phoneRegex1.test(noWhiteSpaceString)) {
-    console.log("match regex1: " + noWhiteSpaceString)
-    return true;
-
-  }
-  if (phoneRegex2.test(noWhiteSpaceString)) {
-    console.log("match regex2: " + noWhiteSpaceString)
-    return true;
-
-  }
-  if (phoneRegex3.test(noWhiteSpaceString)) {
-    console.log("match regex3: " + noWhiteSpaceString)
-    return true;
-
-  }
-  if (phoneRegex4.test(noWhiteSpaceString)) {
-    console.log("match regex4: " + noWhiteSpaceString)
-    return true;
 
   }
 
-
-
-  console.log(undefined);
-  return undefined;
+  return false;
 }
 
+console.log(telephoneCheck("1 (555) 555-5555"));
 
-telephoneCheck("1 555-555-5555");
-
-const testPhoneNumberPatterns = filteredString => {
-  if (phoneRegex1.test(filteredString)
-    || phoneRegex2.test(filteredString)
-    || phoneRegex3.test(filteredString)
-    || phoneRegex4.test(filteredString)
-
-  ) {
-    console.log("match regex: " + filteredString)
-    return true;
-  }
-}
 
 
