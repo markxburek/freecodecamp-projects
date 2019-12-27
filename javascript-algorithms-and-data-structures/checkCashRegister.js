@@ -1,73 +1,206 @@
-const denominations = {
-    ONE_HUNDRED_DOLLAR_BILL: 100.00,
-    TWENTY_DOLLAR_BILL: 20.00,
-    TEN_DOLLAR_BILL: 10.00,
-    FIVE_DOLLAR_BILL: 5.00,
-    ONE_DOLLAR_BILL: 1.00,
-    QUARTER: 0.25,
-    DIME: 0.10,
-    NICKEL: 0.05,
-    PENNY: 0.01
-};
+ 
 
-const countNumberOfDenominationNeeded = (change, denominationValue) => {
-    let count = 0;
+const calculateTotalChangeToGive = (cash, price) => (cash * 100 - price * 100) / 100;
 
-    console.log('change is initially ' + change + ' and denomValue is ' + denominationValue);
+ 
+const calculateTotalMoneyInDrawer = cid => {
 
-    while(change >= denominationValue){
-        count++;
-        change  -=  denominationValue;
-        console.log('change is now ' + change)
+    let change = 0;
+
+    //console.log('total amount in drawer: ' + cid[0])
+    for (let i = 0; i < cid.length; i++) {
+        change = (change*100 + cid[i][1]*100)/100;
+             
     }
 
-    return count;
+    return change;
+
+};
+
+ 
+
+class CashRegister{
+    constructor(price, cash, cid){
+        this.cid = cid;
+        this.changeNeeded = this.calculateTotalChangeToGive(cash, price);
+        this.currentDemominationIndex = cid.length -1;
+        this.changeToGive =  [["PENNY", 0], ["NICKEL", 0], ["DIME", 0], 
+        ["QUARTER", 0], ["ONE", 0], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]];
+        this.denominationNumericalValue = {
+            HUNDRED: 100.00,
+            TWENTY: 20.00,
+            TEN: 10.00,
+            FIVE: 5.00,
+            ONE: 1.00,
+            QUARTER: 0.25,
+            DIME: 0.10,
+            NICKEL: 0.05,
+            PENNY: 0.01
+        };
+
+    }
+
+     
+
+    calculateTotalChangeToGive(cash, price){
+        return (cash * 100 - price * 100) / 100;
+    }
+
+
+  
+    updateDemonimationIndex() {
+        this.currentDemominationIndex--;
+        
+
+
+        // if(this.currentDemonimation > -1){
+        //     this.currentDemomination--;
+        // }
+
+    }
+
+    getCurrentDemonimation() {
+        return this.cid[this.currentDemominationIndex][0];
+
+    }
+
+    getRegister(){
+        return this.cid;
+    }
+
+    isCurrentDenominationEmpty(){
+        if(this.cid[this.currentDemominationIndex][1] > 0) return false;
+        
+        return true;
+
+    }
+
+    getCurrentDemonimationIndex(){
+        return this.currentDemominationIndex;
+    }
+
+    getTotalMoneyInSlot(){
+        return this.cid[this.currentDemominationIndex][1];
+    }
+
+    removeMoneyFromRegister(){
+
+        let denominationValue = this.denominationNumericalValue[this.getCurrentDemonimationIndex()];
+
+        console.log('now money in slot is ' + this.getTotalMoneyInSlot() );
+
+        console.log( 'change needed: ' +this.changeNeeded + ' '+
+         'denom value:  ' + this.denominationNumericalValue[this.getCurrentDemonimation()]
+         + ' ' + 'change to give: ' +this.changeToGive[this.getCurrentDemonimationIndex()][1]
+         );
+
+         let moneyToBeTransfered = 0;
+         while(this.changeNeeded >=  this.denominationNumericalValue[this.getCurrentDemonimation()]  && this.getTotalMoneyInSlot() > 0){
+
+            this.cid[this.currentDemominationIndex][1] =
+            (this.cid[this.currentDemominationIndex][1]*100 - 
+             this.denominationNumericalValue[this.getCurrentDemonimation()]*100)/100;
+
+            this.changeToGive[this.getCurrentDemonimationIndex()][1] =
+
+            (this.changeToGive[this.getCurrentDemonimationIndex()][1]*100 + 
+            this.denominationNumericalValue[this.getCurrentDemonimation()]*100)/100;
+
+            this.changeNeeded = 
+            Math.round(this.changeNeeded*100 - 
+                this.denominationNumericalValue[this.getCurrentDemonimation()]*100)/100;
+            
+         }
+
+         console.log('now money in slot is ' + this.getTotalMoneyInSlot() );
+
+    }
+
+    
+
+
 };
 
 
 
 function checkCashRegister(price, cash, cid) {
 
-    let change = cash - price;
-    console.log('change is  ' + change);
+    const cashRegister = new CashRegister(price, cash, cid);
 
-    console.log("count is " + countNumberOfDenominationNeeded(change, 0.25) );
-     
+    let totalCashInRegister = 0;
 
-    // for (denomination in denominations) {
-    //     if (denominations[denomination] < change) {
-    //         console.log('now using denomination: ' + denominations[denomination]);
+    for(let i = 0; i< cashRegister.cid.length; i++){
 
-    //         // while(change <  denominations[denomination] ){
-
-    //         // }
-    //     }
-    //     //console.log(denominations[denomination]);
-    // }
+        totalCashInRegister = (totalCashInRegister*100 + cashRegister.cid[i][1]*100)/100;
 
 
-    // Here is your change, ma'am.
 
-     
-    return change;
-}
+
+    }
+
+    console.log('total in register is ' +totalCashInRegister);
+
+
+
+
+    let changeNeeded = calculateTotalChangeToGive(cash, price);
+
+    while(cashRegister.getCurrentDemonimationIndex() >=0){
+        if(cashRegister.isCurrentDenominationEmpty()){
+            cashRegister.updateDemonimationIndex();
+
+        }  
+        else {
+            cashRegister.removeMoneyFromRegister();
+
+
+
+            cashRegister.updateDemonimationIndex();
+
+        }
+        console.log('current denom is ' +cashRegister.getCurrentDemonimationIndex() )
+    }
+
+    console.log('end of function');
+
+    /*  
+    CLOSED means enough funds for change AND there's no more money in register
+    INSUFFICIENT FUNDS means changeNeeded didn't reduce down to 0
+
+    */
+
+
 
  
 
 
-// Example cash-in-drawer array:
-// [["PENNY", 1.01],
-// ["NICKEL", 2.05],
-// ["DIME", 3.1],
-// ["QUARTER", 4.25],
-// ["ONE", 90],
-// ["FIVE", 55],
-// ["TEN", 20],
-// ["TWENTY", 60],
-// ["ONE HUNDRED", 100]]
+
+    let statusChangeObject = {status: null , change: null};
+
+    statusChangeObject.change = cashRegister.changeToGive;
+
+    if(totalCashInRegister === 0 && cashRegister.changeNeeded === 0 ){
+        statusChangeObject.status = "CLOSED";
+    } else if (cashRegister.changeNeeded !== 0){
+        statusChangeObject.status = "INSUFFICIENT_FUNDS";
+
+    } else {
+        statusChangeObject.status = "OPEN";
+    }
 
 
 
-checkCashRegister(19.5, 20, [["PENNY", 1.01], ["NICKEL", 2.05], ["DIME", 3.1],
-["QUARTER", 4.25], ["ONE", 90], ["FIVE", 55], ["TEN", 20], ["TWENTY", 60],
-["ONE HUNDRED", 100]]);
+
+    console.log(statusChangeObject);
+
+    
+
+  
+
+    return statusChangeObject;
+}
+checkCashRegister(3.26, 100, [["PENNY", 1.01], ["NICKEL", 2.05], ["DIME", 3.1], ["QUARTER", 4.25], ["ONE", 90], ["FIVE", 55], ["TEN", 20], ["TWENTY", 60], ["ONE HUNDRED", 100]]) 
+
+
+
+
