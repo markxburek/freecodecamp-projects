@@ -24,8 +24,7 @@ class CashRegister{
         this.cid = cid;
         this.changeNeeded = this.calculateTotalChangeToGive(cash, price);
         this.currentDemominationIndex = cid.length -1;
-        this.changeToGive =  [["PENNY", 0], ["NICKEL", 0], ["DIME", 0], 
-        ["QUARTER", 0], ["ONE", 0], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]];
+        this.changeToGive =  [];
         this.denominationNumericalValue = {
             HUNDRED: 100.00,
             TWENTY: 20.00,
@@ -89,10 +88,10 @@ class CashRegister{
 
         console.log('now money in slot is ' + this.getTotalMoneyInSlot() );
 
-        console.log( 'change needed: ' +this.changeNeeded + ' '+
-         'denom value:  ' + this.denominationNumericalValue[this.getCurrentDemonimation()]
-         + ' ' + 'change to give: ' +this.changeToGive[this.getCurrentDemonimationIndex()][1]
-         );
+        // console.log( 'change needed: ' +this.changeNeeded + ' '+
+        //  'denom value:  ' + this.denominationNumericalValue[this.getCurrentDemonimation()]
+        //  + ' ' + 'change to give: ' +this.changeToGive[this.getCurrentDemonimationIndex()][1]
+        //  );
 
          let moneyToBeTransfered = 0;
          while(this.changeNeeded >=  this.denominationNumericalValue[this.getCurrentDemonimation()]  && this.getTotalMoneyInSlot() > 0){
@@ -101,9 +100,14 @@ class CashRegister{
             (this.cid[this.currentDemominationIndex][1]*100 - 
              this.denominationNumericalValue[this.getCurrentDemonimation()]*100)/100;
 
-            this.changeToGive[this.getCurrentDemonimationIndex()][1] =
+            // this.changeToGive[this.getCurrentDemonimationIndex()][1] =
 
-            (this.changeToGive[this.getCurrentDemonimationIndex()][1]*100 + 
+            // (this.changeToGive[this.getCurrentDemonimationIndex()][1]*100 + 
+            // this.denominationNumericalValue[this.getCurrentDemonimation()]*100)/100;
+
+            moneyToBeTransfered =
+
+            (moneyToBeTransfered*100 + 
             this.denominationNumericalValue[this.getCurrentDemonimation()]*100)/100;
 
             this.changeNeeded = 
@@ -111,6 +115,18 @@ class CashRegister{
                 this.denominationNumericalValue[this.getCurrentDemonimation()]*100)/100;
             
          }
+
+         console.log('current denomination is ' + this.getCurrentDemonimation());
+         console.log('money to transfer is ' + moneyToBeTransfered)
+
+         if(moneyToBeTransfered > 0){
+            this.changeToGive.push( [this.getCurrentDemonimation(), moneyToBeTransfered] )
+
+         }
+
+          
+
+
 
          console.log('now money in slot is ' + this.getTotalMoneyInSlot() );
 
