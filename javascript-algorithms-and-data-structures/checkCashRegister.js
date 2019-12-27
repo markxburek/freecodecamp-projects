@@ -17,7 +17,7 @@ const calculateTotalMoneyInDrawer = cid => {
 
 };
 
- 
+/* fix-changeToGive */ 
 
 class CashRegister{
     constructor(price, cash, cid){
