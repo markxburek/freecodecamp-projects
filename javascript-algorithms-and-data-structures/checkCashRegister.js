@@ -199,6 +199,7 @@ function checkCashRegister(price, cash, cid) {
         statusChangeObject.status = "CLOSED";
     } else if (cashRegister.changeNeeded !== 0){
         statusChangeObject.status = "INSUFFICIENT_FUNDS";
+        statusChangeObject.change = [];
 
     } else {
         statusChangeObject.status = "OPEN";
