@@ -17,6 +17,15 @@ const calculateTotalMoneyInDrawer = cid => {
 
 };
 
+// const closedDrawerSlots = changeToGive => {
+
+
+
+//     return updatedChangeToGIve;
+
+
+// };
+
 /* fix-changeToGive */ 
 
 class CashRegister{
@@ -44,6 +53,8 @@ class CashRegister{
     calculateTotalChangeToGive(cash, price){
         return (cash * 100 - price * 100) / 100;
     }
+
+ 
 
 
   
@@ -97,7 +108,7 @@ class CashRegister{
          while(this.changeNeeded >=  this.denominationNumericalValue[this.getCurrentDemonimation()]  && this.getTotalMoneyInSlot() > 0){
 
             this.cid[this.currentDemominationIndex][1] =
-            (this.cid[this.currentDemominationIndex][1]*100 - 
+            Math.round(this.cid[this.currentDemominationIndex][1]*100 - 
              this.denominationNumericalValue[this.getCurrentDemonimation()]*100)/100;
 
             // this.changeToGive[this.getCurrentDemonimationIndex()][1] =
@@ -107,7 +118,7 @@ class CashRegister{
 
             moneyToBeTransfered =
 
-            (moneyToBeTransfered*100 + 
+            Math.round(moneyToBeTransfered*100 + 
             this.denominationNumericalValue[this.getCurrentDemonimation()]*100)/100;
 
             this.changeNeeded = 
@@ -140,6 +151,7 @@ class CashRegister{
 
 
 function checkCashRegister(price, cash, cid) {
+    let statusChangeObject = {status: null , change: null};
 
     const cashRegister = new CashRegister(price, cash, cid);
 
@@ -147,10 +159,7 @@ function checkCashRegister(price, cash, cid) {
 
     for(let i = 0; i< cashRegister.cid.length; i++){
 
-        totalCashInRegister = (totalCashInRegister*100 + cashRegister.cid[i][1]*100)/100;
-
-
-
+        totalCashInRegister = Math.round(totalCashInRegister*100 + cashRegister.cid[i][1]*100)/100;
 
     }
 
@@ -158,8 +167,20 @@ function checkCashRegister(price, cash, cid) {
 
 
 
-
     let changeNeeded = calculateTotalChangeToGive(cash, price);
+
+    if(totalCashInRegister === changeNeeded  ){
+        statusChangeObject.status = "CLOSED";
+        statusChangeObject.change = cashRegister.cid;
+        return statusChangeObject;
+    }
+
+    
+
+
+
+
+ 
 
     while(cashRegister.getCurrentDemonimationIndex() >=0){
         if(cashRegister.isCurrentDenominationEmpty()){
@@ -184,6 +205,19 @@ function checkCashRegister(price, cash, cid) {
     INSUFFICIENT FUNDS means changeNeeded didn't reduce down to 0
 
     */
+   totalCashInRegister = 0; //reset value
+
+   for(let i = 0; i< cashRegister.cid.length; i++){
+
+    totalCashInRegister = Math.round(totalCashInRegister*100 + cashRegister.cid[i][1]*100)/100;
+
+
+
+
+}
+
+console.log('money in penny slot is ' +cashRegister.cid[0][1])
+
 
 
 
@@ -191,18 +225,18 @@ function checkCashRegister(price, cash, cid) {
 
 
 
-    let statusChangeObject = {status: null , change: null};
+ 
 
-    statusChangeObject.change = cashRegister.changeToGive;
+     
 
-    if(totalCashInRegister === 0 && cashRegister.changeNeeded === 0 ){
-        statusChangeObject.status = "CLOSED";
-    } else if (cashRegister.changeNeeded !== 0){
+    if (cashRegister.changeNeeded !== 0){
         statusChangeObject.status = "INSUFFICIENT_FUNDS";
         statusChangeObject.change = [];
 
     } else {
         statusChangeObject.status = "OPEN";
+        statusChangeObject.change = cashRegister.changeToGive;
+
     }
 
 
@@ -216,8 +250,5 @@ function checkCashRegister(price, cash, cid) {
 
     return statusChangeObject;
 }
-
-checkCashRegister(19.5, 20, [["PENNY", 0.01], ["NICKEL", 0], ["DIME", 0], ["QUARTER", 0], ["ONE", 0], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]]) ;
-
-
-
+checkCashRegister(19.5, 20, [["PENNY", 0.5], ["NICKEL", 0], ["DIME", 0], 
+["QUARTER", 0], ["ONE", 0], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]])
